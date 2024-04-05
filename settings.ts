@@ -13,6 +13,7 @@ export interface AutoLinkTitleSettings {
   websiteBlacklist: string;
   maximumTitleLength: number;
   useNewScraper: boolean;
+  linkPreviewApiKey: string;
 }
 
 export const DEFAULT_SETTINGS: AutoLinkTitleSettings = {
@@ -31,6 +32,7 @@ export const DEFAULT_SETTINGS: AutoLinkTitleSettings = {
   websiteBlacklist: "",
   maximumTitleLength: 0,
   useNewScraper: false,
+  linkPreviewApiKey: "",
 };
 
 export class AutoLinkTitleSettingTab extends PluginSettingTab {
@@ -48,61 +50,46 @@ export class AutoLinkTitleSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName("Enhance Default Paste")
-      .setDesc(
-        "Fetch the link title when pasting a link in the editor with the default paste command"
-      )
+      .setDesc("Fetch the link title when pasting a link in the editor with the default paste command")
       .addToggle((val) =>
-        val
-          .setValue(this.plugin.settings.enhanceDefaultPaste)
-          .onChange(async (value) => {
-            console.log(value);
-            this.plugin.settings.enhanceDefaultPaste = value;
-            await this.plugin.saveSettings();
-          })
+        val.setValue(this.plugin.settings.enhanceDefaultPaste).onChange(async (value) => {
+          console.log(value);
+          this.plugin.settings.enhanceDefaultPaste = value;
+          await this.plugin.saveSettings();
+        })
       );
 
     new Setting(containerEl)
       .setName("Enhance Drop Events")
-      .setDesc(
-        "Fetch the link title when drag and dropping a link from another program"
-      )
+      .setDesc("Fetch the link title when drag and dropping a link from another program")
       .addToggle((val) =>
-        val
-          .setValue(this.plugin.settings.enhanceDropEvents)
-          .onChange(async (value) => {
-            console.log(value);
-            this.plugin.settings.enhanceDropEvents = value;
-            await this.plugin.saveSettings();
-          })
+        val.setValue(this.plugin.settings.enhanceDropEvents).onChange(async (value) => {
+          console.log(value);
+          this.plugin.settings.enhanceDropEvents = value;
+          await this.plugin.saveSettings();
+        })
       );
 
     new Setting(containerEl)
       .setName("Maximum title length")
       .setDesc("Set the maximum length of the title. Set to 0 to disable.")
       .addText((val) =>
-        val
-          .setValue(this.plugin.settings.maximumTitleLength.toString(10))
-          .onChange(async (value) => {
-            const titleLength = Number(value);
-            this.plugin.settings.maximumTitleLength =
-              isNaN(titleLength) || titleLength < 0 ? 0 : titleLength;
-            await this.plugin.saveSettings();
-          })
+        val.setValue(this.plugin.settings.maximumTitleLength.toString(10)).onChange(async (value) => {
+          const titleLength = Number(value);
+          this.plugin.settings.maximumTitleLength = isNaN(titleLength) || titleLength < 0 ? 0 : titleLength;
+          await this.plugin.saveSettings();
+        })
       );
 
     new Setting(containerEl)
       .setName("Preserve selection as title")
-      .setDesc(
-        "Whether to prefer selected text as title over fetched title when pasting"
-      )
+      .setDesc("Whether to prefer selected text as title over fetched title when pasting")
       .addToggle((val) =>
-        val
-          .setValue(this.plugin.settings.shouldPreserveSelectionAsTitle)
-          .onChange(async (value) => {
-            console.log(value);
-            this.plugin.settings.shouldPreserveSelectionAsTitle = value;
-            await this.plugin.saveSettings();
-          })
+        val.setValue(this.plugin.settings.shouldPreserveSelectionAsTitle).onChange(async (value) => {
+          console.log(value);
+          this.plugin.settings.shouldPreserveSelectionAsTitle = value;
+          await this.plugin.saveSettings();
+        })
       );
 
     new Setting(containerEl)
@@ -122,32 +109,34 @@ export class AutoLinkTitleSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName("Preserve selection as title")
-      .setDesc(
-        "Whether to prefer selected text as title over fetched title when pasting"
-      )
+      .setDesc("Whether to prefer selected text as title over fetched title when pasting")
       .addToggle((val) =>
-        val
-          .setValue(this.plugin.settings.shouldPreserveSelectionAsTitle)
-          .onChange(async (value) => {
-            console.log(value);
-            this.plugin.settings.shouldPreserveSelectionAsTitle = value;
-            await this.plugin.saveSettings();
-          })
+        val.setValue(this.plugin.settings.shouldPreserveSelectionAsTitle).onChange(async (value) => {
+          console.log(value);
+          this.plugin.settings.shouldPreserveSelectionAsTitle = value;
+          await this.plugin.saveSettings();
+        })
       );
 
     new Setting(containerEl)
       .setName("Use New Scraper")
-      .setDesc(
-        "Use experimental new scraper, seems to work well on desktop but not mobile."
-      )
+      .setDesc("Use experimental new scraper, seems to work well on desktop but not mobile.")
       .addToggle((val) =>
-        val
-          .setValue(this.plugin.settings.useNewScraper)
-          .onChange(async (value) => {
-            console.log(value);
-            this.plugin.settings.useNewScraper = value;
-            await this.plugin.saveSettings();
-          })
+        val.setValue(this.plugin.settings.useNewScraper).onChange(async (value) => {
+          console.log(value);
+          this.plugin.settings.useNewScraper = value;
+          await this.plugin.saveSettings();
+        })
+      );
+
+    new Setting(containerEl)
+      .setName("LinkPreview API Key")
+      .setDesc("API key for the LinkPreview.net service. Get one at https://my.linkpreview.net/access_keys")
+      .addText((text) =>
+        text.setValue(this.plugin.settings.linkPreviewApiKey || "").onChange(async (value) => {
+          this.plugin.settings.linkPreviewApiKey = value;
+          await this.plugin.saveSettings();
+        })
       );
   }
 }
