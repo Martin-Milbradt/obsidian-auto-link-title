@@ -14,6 +14,7 @@ When pasting `https://github.com/zolrath/obsidian-auto-link-title` the plugin fe
 ## Changes to original
 
 - Replacing `[]` with `()` in titles
+- Trimming website names from titles
 
 ## Add Titles To Existing Raw URLs
 

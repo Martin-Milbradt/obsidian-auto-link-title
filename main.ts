@@ -24,7 +24,7 @@ export default class AutoLinkTitle extends Plugin {
     blacklist: Array<string>;
 
     async onload() {
-        console.log("loading obsidian-auto-link-title");
+        console.log("loading obsidian-auto-link-title-fork");
         await this.loadSettings();
 
         this.blacklist = this.settings.websiteBlacklist
@@ -302,9 +302,10 @@ export default class AutoLinkTitle extends Plugin {
     escapeMarkdown(text: string): string {
         text = text.replace(/\[/g, "(");
         text = text.replace(/]/g, ")");
-        let unescaped = text.replace(/\\([*_`~\\])/g, "$1"); // unescape any "backslashed" character
-        let escaped = unescaped.replace(/[*_`<>~\\])/g, "\\$1"); // escape *, _, `, ~, \, <, and >
-        return escaped;
+        text = text.split(/[|—–]|( - )|( · )/)[0].trim(); // Trim website name
+        text = text.replace(/\\([*_`~\\])/g, "$1"); // unescape any "backslashed" character
+        text = text.replace(/([*_`<>~\\])/g, "\\$1"); // escape *, _, `, ~, \, <, and >
+        return text;
     }
 
     public shortTitle = (title: string): string => {
@@ -355,7 +356,7 @@ export default class AutoLinkTitle extends Plugin {
     }
 
     onunload() {
-        console.log("unloading obsidian-auto-link-title");
+        console.log("unloading obsidian-auto-link-title-fork");
     }
 
     async loadSettings() {

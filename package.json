@@ -1,23 +1,23 @@
 {
-  "name": "obsidian-auto-link-title",
-  "version": "1.5.3",
-  "description": "Automatically fetches the titles of links from the web and formats link when pasted",
-  "main": "main.js",
-  "scripts": {
-    "dev": "rollup --config rollup.config.js -w",
-    "build": "rollup --config rollup.config.js --environment BUILD:production"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "MIT",
-  "devDependencies": {
-    "@rollup/plugin-commonjs": "^18.0.0",
-    "@rollup/plugin-node-resolve": "^11.2.1",
-    "@rollup/plugin-typescript": "^8.2.1",
-    "@types/node": "^14.14.37",
-    "obsidian": "^1.4.11",
-    "rollup": "^2.32.1",
-    "tslib": "^2.2.0",
-    "typescript": "^5.2.2"
-  }
+    "name": "obsidian-auto-link-title-fork",
+    "version": "1.5.3",
+    "description": "Automatically fetches the titles of links from the web and formats link when pasted",
+    "main": "main.js",
+    "scripts": {
+        "dev": "rollup --config rollup.config.js -w",
+        "build": "rollup --config rollup.config.js --environment BUILD:production"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "MIT",
+    "devDependencies": {
+        "@rollup/plugin-commonjs": "^18.0.0",
+        "@rollup/plugin-node-resolve": "^11.2.1",
+        "@rollup/plugin-typescript": "^8.2.1",
+        "@types/node": "^14.14.37",
+        "obsidian": "^1.4.11",
+        "rollup": "^2.32.1",
+        "tslib": "^2.2.0",
+        "typescript": "^5.2.2"
+    }
 }
