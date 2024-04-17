@@ -165,11 +165,6 @@ export default class AutoLinkTitle extends Plugin {
       return;
     }
 
-    let selectedText = (EditorExtensions.getSelectedText(editor) || "").trim();
-    if (selectedText && !this.settings.shouldReplaceSelection) {
-      // If there is selected text and shouldReplaceSelection is false, do not fetch title
-      return;
-    }
 
     // We've decided to handle the paste, stop propagation to the default handler.
     clipboard.stopPropagation();
@@ -185,8 +180,10 @@ export default class AutoLinkTitle extends Plugin {
 
     // If url is pasted over selected text and setting is enabled, no need to fetch title,
     // just insert a link
+    let selectedText = (EditorExtensions.getSelectedText(editor) || "").trim();
     if (selectedText && this.settings.shouldPreserveSelectionAsTitle) {
       editor.replaceSelection(`[${selectedText}](${clipboardText})`);
+      return;
     }
 
     // At this point we're just pasting a link in a normal fashion, fetch its title.
@@ -213,12 +210,6 @@ export default class AutoLinkTitle extends Plugin {
       return;
     }
 
-    let selectedText = (EditorExtensions.getSelectedText(editor) || "").trim();
-    if (selectedText && !this.settings.shouldReplaceSelection) {
-      // If there is selected text and shouldReplaceSelection is false, do not fetch title
-      return;
-    }
-
     // We've decided to handle the paste, stop propagation to the default handler.
     dropEvent.stopPropagation();
     dropEvent.preventDefault();
@@ -228,6 +219,14 @@ export default class AutoLinkTitle extends Plugin {
     // being inside the link.
     if (CheckIf.isMarkdownLinkAlready(editor) || CheckIf.isAfterQuote(editor)) {
       editor.replaceSelection(dropText);
+      return;
+    }
+
+    // If url is pasted over selected text and setting is enabled, no need to fetch title,
+    // just insert a link
+    let selectedText = (EditorExtensions.getSelectedText(editor) || "").trim();
+    if (selectedText && this.settings.shouldPreserveSelectionAsTitle) {
+      editor.replaceSelection(`[${selectedText}](${dropText})`);
       return;
     }
 
