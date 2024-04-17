@@ -65,7 +65,7 @@ async function nonElectronGetPageTitle(url: string): Promise<string> {
 
     if (title == null || blank(title?.innerText)) {
       // If site is javascript based and has a no-title attribute when unloaded, use it.
-      var noTitle = title?.getAttr("no-title");
+      let noTitle = title?.getAttr("no-title");
       if (notBlank(noTitle)) {
         return noTitle;
       }
@@ -84,11 +84,11 @@ async function nonElectronGetPageTitle(url: string): Promise<string> {
 
 function getUrlFinalSegment(url: string): string {
   try {
-    const segments = new URL(url).pathname.split('/');
+    const segments = new URL(url).pathname.split("/");
     const last = segments.pop() || segments.pop(); // Handle potential trailing slash
     return last;
   } catch (_) {
-    return "File"
+    return "File";
   }
 }
 

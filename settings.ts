@@ -7,6 +7,7 @@ export interface AutoLinkTitleSettings {
   linkRegex: RegExp;
   linkLineRegex: RegExp;
   imageRegex: RegExp;
+  shouldReplaceSelection: boolean;
   shouldPreserveSelectionAsTitle: boolean;
   enhanceDefaultPaste: boolean;
   enhanceDropEvents: boolean;
@@ -25,9 +26,10 @@ export const DEFAULT_SETTINGS: AutoLinkTitleSettings = {
   linkLineRegex:
     /\[([^\[\]]*)\]\((https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})\)/gi,
   imageRegex: /\.(gif|jpe?g|tiff?|png|webp|bmp|tga|psd|ai)$/i,
+  shouldReplaceSelection: true,
   enhanceDefaultPaste: true,
-  shouldPreserveSelectionAsTitle: false,
   enhanceDropEvents: true,
+  shouldPreserveSelectionAsTitle: false,
   websiteBlacklist: "",
   maximumTitleLength: 0,
   useNewScraper: false,
@@ -78,30 +80,29 @@ export class AutoLinkTitleSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName("Maximum title length")
-      .setDesc(
-        "Set the maximum length of the title. Set to 0 to disable."
-      )
+      .setDesc("Set the maximum length of the title. Set to 0 to disable.")
       .addText((val) =>
         val
           .setValue(this.plugin.settings.maximumTitleLength.toString(10))
           .onChange(async (value) => {
-            const titleLength = (Number(value))
-            this.plugin.settings.maximumTitleLength = isNaN(titleLength) || titleLength < 0 ? 0 : titleLength;
+            const titleLength = Number(value);
+            this.plugin.settings.maximumTitleLength =
+              isNaN(titleLength) || titleLength < 0 ? 0 : titleLength;
             await this.plugin.saveSettings();
           })
-      )
+      );
 
     new Setting(containerEl)
-      .setName("Preserve selection as title")
+      .setName("Replace Selection")
       .setDesc(
-        "Whether to prefer selected text as title over fetched title when pasting"
+        "Whether to replace a text selection with link and fetched title"
       )
       .addToggle((val) =>
         val
-          .setValue(this.plugin.settings.shouldPreserveSelectionAsTitle)
+          .setValue(this.plugin.settings.shouldReplaceSelection)
           .onChange(async (value) => {
             console.log(value);
-            this.plugin.settings.shouldPreserveSelectionAsTitle = value;
+            this.plugin.settings.shouldReplaceSelection = value;
             await this.plugin.saveSettings();
           })
       );
@@ -117,6 +118,21 @@ export class AutoLinkTitleSettingTab extends PluginSettingTab {
           .setPlaceholder("localhost, tiktok.com")
           .onChange(async (value) => {
             this.plugin.settings.websiteBlacklist = value;
+            await this.plugin.saveSettings();
+          })
+      );
+
+    new Setting(containerEl)
+      .setName("Preserve selection as title")
+      .setDesc(
+        "Whether to prefer selected text as title over fetched title when pasting"
+      )
+      .addToggle((val) =>
+        val
+          .setValue(this.plugin.settings.shouldPreserveSelectionAsTitle)
+          .onChange(async (value) => {
+            console.log(value);
+            this.plugin.settings.shouldPreserveSelectionAsTitle = value;
             await this.plugin.saveSettings();
           })
       );

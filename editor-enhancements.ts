@@ -1,5 +1,5 @@
-import {Editor, EditorPosition} from 'obsidian';
-import {DEFAULT_SETTINGS} from 'settings';
+import { Editor, EditorPosition } from "obsidian";
+import { DEFAULT_SETTINGS } from "settings";
 
 interface WordBoundaries {
   start: { line: number; ch: number };
@@ -15,7 +15,10 @@ export class EditorExtensions {
     return editor.getSelection();
   }
 
-  private static cursorWithinBoundaries(cursor: EditorPosition, match: RegExpMatchArray): boolean {
+  private static cursorWithinBoundaries(
+    cursor: EditorPosition,
+    match: RegExpMatchArray
+  ): boolean {
     let startIndex = match.index;
     let endIndex = match.index + match[0].length;
 
@@ -37,7 +40,10 @@ export class EditorExtensions {
       if (this.cursorWithinBoundaries(cursor, match)) {
         return {
           start: { line: cursor.line, ch: match.index },
-          end: { line: cursor.line, ch: match.index + match[0].length },
+          end: {
+            line: cursor.line,
+            ch: match.index + match[0].length,
+          },
         };
       }
     }
@@ -49,7 +55,10 @@ export class EditorExtensions {
       if (this.cursorWithinBoundaries(cursor, match)) {
         return {
           start: { line: cursor.line, ch: match.index },
-          end: { line: cursor.line, ch: match.index + match[0].length },
+          end: {
+            line: cursor.line,
+            ch: match.index + match[0].length,
+          },
         };
       }
     }
