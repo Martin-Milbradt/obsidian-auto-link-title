@@ -1,7 +1,7 @@
 {
   "id": "obsidian-auto-link-title-fork",
   "name": "Auto Link Title Fork",
-  "version": "1.5.4.2",
+  "version": "1.5.4-fork.2",
   "minAppVersion": "0.12.17",
   "description": "This plugin automatically fetches the titles of links from the web",
   "author": "Martin Milbradt",
