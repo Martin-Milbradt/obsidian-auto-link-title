@@ -3,11 +3,7 @@ import { EditorExtensions } from "editor-enhancements";
 import { Editor, Plugin } from "obsidian";
 import getPageTitle from "scraper";
 import getElectronPageTitle from "electron-scraper";
-import {
-  AutoLinkTitleSettingTab,
-  AutoLinkTitleSettings,
-  DEFAULT_SETTINGS,
-} from "./settings";
+import { AutoLinkTitleSettingTab, AutoLinkTitleSettings, DEFAULT_SETTINGS } from "./settings";
 
 interface PasteFunction {
   (this: HTMLElement, ev: ClipboardEvent): void;
@@ -57,9 +53,7 @@ export default class AutoLinkTitle extends Plugin {
       ],
     });
 
-    this.registerEvent(
-      this.app.workspace.on("editor-paste", this.pasteFunction)
-    );
+    this.registerEvent(this.app.workspace.on("editor-paste", this.pasteFunction));
 
     this.registerEvent(this.app.workspace.on("editor-drop", this.dropFunction));
 
@@ -142,30 +136,20 @@ export default class AutoLinkTitle extends Plugin {
     this.convertUrlToTitledLink(editor, clipboardText);
   }
 
-  async pasteUrlWithTitle(
-    clipboard: ClipboardEvent,
-    editor: Editor
-  ): Promise<void> {
+  async pasteUrlWithTitle(clipboard: ClipboardEvent, editor: Editor): Promise<void> {
     if (!this.settings.enhanceDefaultPaste) {
       return;
     }
-
-    if (clipboard.defaultPrevented) return;
-
     // Only attempt fetch if online
     if (!navigator.onLine) return;
-
     let clipboardText = clipboard.clipboardData.getData("text/plain");
     if (clipboardText === null || clipboardText === "") return;
-
     // If its not a URL, we return false to allow the default paste handler to take care of it.
     // Similarly, image urls don't have a meaningful <title> attribute so downloading it
     // to fetch the title is a waste of bandwidth.
     if (!CheckIf.isUrl(clipboardText) || CheckIf.isImage(clipboardText)) {
       return;
     }
-
-
     // We've decided to handle the paste, stop propagation to the default handler.
     clipboard.stopPropagation();
     clipboard.preventDefault();
@@ -177,7 +161,6 @@ export default class AutoLinkTitle extends Plugin {
       editor.replaceSelection(clipboardText);
       return;
     }
-
     // If url is pasted over selected text and setting is enabled, no need to fetch title,
     // just insert a link
     let selectedText = (EditorExtensions.getSelectedText(editor) || "").trim();
@@ -185,7 +168,6 @@ export default class AutoLinkTitle extends Plugin {
       editor.replaceSelection(`[${selectedText}](${clipboardText})`);
       return;
     }
-
     // At this point we're just pasting a link in a normal fashion, fetch its title.
     this.convertUrlToTitledLink(editor, clipboardText);
   }
@@ -265,9 +247,7 @@ export default class AutoLinkTitle extends Plugin {
 
     const start = text.indexOf(pasteId);
     if (start < 0) {
-      console.log(
-        `Unable to find text "${pasteId}" in current editor, bailing out; link ${url}`
-      );
+      console.log(`Unable to find text "${pasteId}" in current editor, bailing out; link ${url}`);
     } else {
       const end = start + pasteId.length;
       const startPos = EditorExtensions.getEditorPositionFromIndex(text, start);
@@ -293,10 +273,7 @@ export default class AutoLinkTitle extends Plugin {
     if (title.length < this.settings.maximumTitleLength + 3) {
       return title;
     }
-    const shortenedTitle = `${title.slice(
-      0,
-      this.settings.maximumTitleLength
-    )}...`;
+    const shortenedTitle = `${title.slice(0, this.settings.maximumTitleLength)}...`;
     return shortenedTitle;
   };
 
