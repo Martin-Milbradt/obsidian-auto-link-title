@@ -260,10 +260,11 @@ export default class AutoLinkTitle extends Plugin {
   escapeMarkdown(text: string): string {
     text = text.replace(/\[/g, "(");
     text = text.replace(/]/g, ")");
-    text = text.split(/[|—–]|( - )|( · )/)[0].trim(); // Trim website name
+    const textArr = text.split(/[|—–]|( - )|( · )/); // Remove site name
+    text = textArr[0] == "GitHub" ? textArr[textArr.length - 1] : textArr[0]; // GH leads the title
     text = text.replace(/\\([*_`~\\])/g, "$1"); // unescape any "backslashed" character
     text = text.replace(/([*_`<>~\\])/g, "\\$1"); // escape *, _, `, ~, \, <, and >
-    return text;
+    return text.trim();
   }
 
   public shortTitle = (title: string): string => {
