@@ -136,7 +136,10 @@ export default class AutoLinkTitle extends Plugin {
     this.convertUrlToTitledLink(editor, clipboardText);
   }
 
-  async pasteUrlWithTitle(clipboard: ClipboardEvent, editor: Editor): Promise<void> {
+  async pasteUrlWithTitle(
+    clipboard: ClipboardEvent,
+    editor: Editor
+  ): Promise<void> {
     if (!this.settings.enhanceDefaultPaste) {
       return;
     }
@@ -161,6 +164,8 @@ export default class AutoLinkTitle extends Plugin {
       editor.replaceSelection(clipboardText);
       return;
     }
+
+    // If url is pasted over selected text and setting is enabled, no need to fetch title,
     // If url is pasted over selected text and setting is enabled, no need to fetch title,
     // just insert a link
     let selectedText = (EditorExtensions.getSelectedText(editor) || "").trim();
@@ -274,25 +279,56 @@ export default class AutoLinkTitle extends Plugin {
     if (title.length < this.settings.maximumTitleLength + 3) {
       return title;
     }
-    const shortenedTitle = `${title.slice(0, this.settings.maximumTitleLength)}...`;
+    const shortenedTitle = `${title.slice(
+      0,
+      this.settings.maximumTitleLength
+    )}...`;
     return shortenedTitle;
   };
 
-  async fetchUrlTitle(url: string): Promise<string> {
+  public async fetchUrlTitleViaLinkPreview(url: string): Promise<string> {
     try {
-      const apiEndpoint = `https://api.linkpreview.net/?q=${encodeURIComponent(url)}`;
+      const apiEndpoint = `https://api.linkpreview.net/?q=${encodeURIComponent(
+        url
+      )}`;
       const response = await fetch(apiEndpoint, {
         headers: {
           "X-Linkpreview-Api-Key": this.settings.linkPreviewApiKey,
-        }
+        },
       });
       const data = await response.json();
-      // Assuming the API returns a JSON object with a title property
-      const title = data.title || 'Title Unavailable';
-      return title.replace(/(\r\n|\n|\r)/gm, "").trim();
+      return data.title;
     } catch (error) {
       console.error(error);
-      return 'Error fetching title';
+      return "";
+    }
+  }
+
+  async fetchUrlTitle(url: string): Promise<string> {
+    try {
+      let title = "";
+      title = await this.fetchUrlTitleViaLinkPreview(url);
+      console.log(`Title via Link Preview: ${title}`);
+
+      if (title === "") {
+        console.log("Title via Link Preview failed, falling back to scraper");
+        if (this.settings.useNewScraper) {
+          console.log("Using new scraper");
+          title = await getPageTitle(url);
+        } else {
+          console.log("Using old scraper");
+          title = await getElectronPageTitle(url);
+        }
+      }
+
+      console.log(`Title: ${title}`);
+      title =
+        title.replace(/(\r\n|\n|\r)/gm, "").trim() ||
+        "Title Unavailable | Site Unreachable";
+      return title;
+    } catch (error) {
+      console.error(error);
+      return "Error fetching title";
     }
   }
 
