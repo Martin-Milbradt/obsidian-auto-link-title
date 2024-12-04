@@ -1,5 +1,6 @@
 import AutoLinkTitle from "main";
 import { App, PluginSettingTab, Setting } from "obsidian";
+import { Notice } from "obsidian";
 
 export interface AutoLinkTitleSettings {
   regex: RegExp;
