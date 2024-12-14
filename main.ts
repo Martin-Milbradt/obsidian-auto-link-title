@@ -1,6 +1,6 @@
 import { CheckIf } from "checkif";
 import { EditorExtensions } from "editor-enhancements";
-import { Editor, Plugin } from "obsidian";
+import { Editor, Plugin, Notice } from "obsidian";
 import getPageTitle from "scraper";
 import getElectronPageTitle from "electron-scraper";
 import { AutoLinkTitleSettingTab, AutoLinkTitleSettings, DEFAULT_SETTINGS } from "./settings";
@@ -74,7 +74,6 @@ export default class AutoLinkTitle extends Plugin {
 
   addTitleToLink(editor: Editor): void {
     // Only attempt fetch if online
-    if (!navigator.onLine) return;
 
     let selectedText = (EditorExtensions.getSelectedText(editor) || "").trim();
 
@@ -82,6 +81,12 @@ export default class AutoLinkTitle extends Plugin {
     if (CheckIf.isUrl(selectedText)) {
       this.convertUrlToTitledLink(editor, selectedText);
     }
+
+    if (!navigator.onLine) {
+      new Notice("No internet connection. Cannot fetch title.");
+      return;
+    }
+
     // If the cursor is on the URL part of a markdown link, fetch title and replace existing link title
     else if (CheckIf.isLinkedUrl(selectedText)) {
       const link = this.getUrlFromLink(selectedText);
@@ -103,6 +108,7 @@ export default class AutoLinkTitle extends Plugin {
     // Only attempt fetch if online
     if (!navigator.onLine) {
       editor.replaceSelection(clipboardText);
+      new Notice("No internet connection. Cannot fetch title.");
       return;
     }
 
@@ -184,9 +190,6 @@ export default class AutoLinkTitle extends Plugin {
 
     if (dropEvent.defaultPrevented) return;
 
-    // Only attempt fetch if online
-    if (!navigator.onLine) return;
-
     let dropText = dropEvent.dataTransfer.getData("text/plain");
     if (dropText === null || dropText === "") return;
 
@@ -194,6 +197,11 @@ export default class AutoLinkTitle extends Plugin {
     // Similarly, image urls don't have a meaningful <title> attribute so downloading it
     // to fetch the title is a waste of bandwidth.
     if (!CheckIf.isUrl(dropText) || CheckIf.isImage(dropText)) {
+      return;
+    }
+    // Only attempt fetch if online
+    if (!navigator.onLine) {
+      new Notice("No internet connection. Cannot fetch title.");
       return;
     }
 
