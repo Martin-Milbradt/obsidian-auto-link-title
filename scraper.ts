@@ -1,18 +1,17 @@
 import { requestUrl } from "obsidian";
 
-function blank(text: string): boolean {
+function blank(text: string | null | undefined): boolean {
   return text === undefined || text === null || text === "";
 }
 
-function notBlank(text: string): boolean {
+function notBlank(text: string | null | undefined): boolean {
   return !blank(text);
 }
 
-async function scrape(url: string): Promise<string> {
+async function scrape(url: string): Promise<string | null | undefined> {
   try {
     const response = await requestUrl(url);
-    if (!response.headers["content-type"].includes("text/html"))
-      return getUrlFinalSegment(url);
+    if (!response.headers["content-type"].includes("text/html")) return getUrlFinalSegment(url);
     const html = response.text;
 
     const doc = new DOMParser().parseFromString(html, "text/html");
@@ -28,7 +27,10 @@ async function scrape(url: string): Promise<string> {
       // Otherwise if the site has no title/requires javascript simply return Title Unknown
       return url;
     }
-
+    if (!title) {
+      console.error(`title is null for ${url}`);
+      return "Site Unreachable";
+    }
     return title.innerText;
   } catch (ex) {
     console.error(ex);
@@ -36,7 +38,7 @@ async function scrape(url: string): Promise<string> {
   }
 }
 
-function getUrlFinalSegment(url: string): string {
+function getUrlFinalSegment(url: string): string | undefined {
   try {
     const segments = new URL(url).pathname.split("/");
     const last = segments.pop() || segments.pop(); // Handle potential trailing slash
