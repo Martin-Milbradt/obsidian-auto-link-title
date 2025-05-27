@@ -15,6 +15,7 @@ export interface AutoLinkTitleSettings {
   maximumTitleLength: number;
   useNewScraper: boolean;
   linkPreviewApiKey: string;
+  useBetterPasteId: boolean;
 }
 
 export const DEFAULT_SETTINGS: AutoLinkTitleSettings = {
@@ -34,6 +35,7 @@ export const DEFAULT_SETTINGS: AutoLinkTitleSettings = {
   maximumTitleLength: 0,
   useNewScraper: false,
   linkPreviewApiKey: "",
+  useBetterPasteId: false,
 };
 
 export class AutoLinkTitleSettingTab extends PluginSettingTab {

@@ -142,10 +142,7 @@ export default class AutoLinkTitle extends Plugin {
     this.convertUrlToTitledLink(editor, clipboardText);
   }
 
-  async pasteUrlWithTitle(
-    clipboard: ClipboardEvent,
-    editor: Editor
-  ): Promise<void> {
+  async pasteUrlWithTitle(clipboard: ClipboardEvent, editor: Editor): Promise<void> {
     if (!this.settings.enhanceDefaultPaste) {
       return;
     }
@@ -287,25 +284,18 @@ export default class AutoLinkTitle extends Plugin {
     if (title.length < this.settings.maximumTitleLength + 3) {
       return title;
     }
-    const shortenedTitle = `${title.slice(
-      0,
-      this.settings.maximumTitleLength
-    )}...`;
+    const shortenedTitle = `${title.slice(0, this.settings.maximumTitleLength)}...`;
     return shortenedTitle;
   };
 
   public async fetchUrlTitleViaLinkPreview(url: string): Promise<string> {
     if (this.settings.linkPreviewApiKey.length !== 32) {
-      console.error(
-        "LinkPreview API key is not 32 characters long, please check your settings"
-      );
+      console.error("LinkPreview API key is not 32 characters long, please check your settings");
       return "";
     }
 
     try {
-      const apiEndpoint = `https://api.linkpreview.net/?q=${encodeURIComponent(
-        url
-      )}`;
+      const apiEndpoint = `https://api.linkpreview.net/?q=${encodeURIComponent(url)}`;
       const response = await fetch(apiEndpoint, {
         headers: {
           "X-Linkpreview-Api-Key": this.settings.linkPreviewApiKey,
@@ -337,9 +327,7 @@ export default class AutoLinkTitle extends Plugin {
       }
 
       console.log(`Title: ${title}`);
-      title =
-        title.replace(/(\r\n|\n|\r)/gm, "").trim() ||
-        "Title Unavailable | Site Unreachable";
+      title = title.replace(/(\r\n|\n|\r)/gm, "").trim() || "Title Unavailable | Site Unreachable";
       return title;
     } catch (error) {
       console.error(error);
@@ -369,9 +357,7 @@ export default class AutoLinkTitle extends Plugin {
     var invisibleCharacter = "\u200B";
     var maxInvisibleCharacters = 2;
     for (var i = 0; i < base.length; i++) {
-      var count = Math.floor(
-        Math.random() * (maxInvisibleCharacters + 1)
-      );
+      var count = Math.floor(Math.random() * (maxInvisibleCharacters + 1));
       result += base.charAt(i) + invisibleCharacter.repeat(count);
     }
     return result;
